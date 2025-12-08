@@ -9,7 +9,9 @@ import threading
 right_click_detected = False
 running = True
 DECIBEL_THRESHOLD = -45
-lure_length = 15
+lure_length = 10
+fishing_button = "f1"
+use_lure = False
 
 
 def on_click(x, y, button, pressed):
@@ -82,6 +84,11 @@ def start_key_listener():
     with keyboard.Listener(on_press=on_key_press) as listener:
         listener.join()
 
+def detect_bite(x):
+    image = cv.imread(os.path.join('images', 'fishing_target.png'), cv.IMREAD_GRAYSCALE)
+
+
+
 
 def fish():
 
@@ -112,7 +119,7 @@ def fish():
             pyautogui.press("f5")
             lure_expiration = time.time() + 60*lure_length
             
-        pyautogui.press("q")  # Cast the fishing line
+        pyautogui.press(fishing_button)  # Cast the fishing line
         time.sleep(2)
     
     
@@ -122,7 +129,7 @@ def fish():
             if location:
                 print("Bobber found.")
                 bobber_x, bobber_y = pyautogui.center(location)
-                pyautogui.moveTo(x=bobber_x, y=bobber_y, duration=duration)
+                pyautogui.moveTo(x=bobber_x, y=bobber_y, duration=duration, tween=pyautogui.easeOutQuad)
                 wait_for_right_click()
             else:
                 print("Bobber not found. Retrying...")
